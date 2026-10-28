@@ -12,15 +12,7 @@ const config: Config = {
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
-    v4: {
-      removeLegacyPostBuildHeadAttribute: true,
-      useCssCascadeLayers: true,
-      siteStorageNamespacing: true,
-      fasterByDefault: true,
-      // Keep MDX v1 compatibility (`<!-- -->` comments, `{#anchor}` heading
-      // ids) until the content is written and we decide to drop it.
-      mdx1CompatDisabledByDefault: false,
-    },
+    v4: true, // Improve compatibility with the upcoming Docusaurus v4
   },
 
   // Set the production url of your site here
@@ -52,15 +44,7 @@ const config: Config = {
     locales: ['es'],
   },
 
-  plugins: [
-      [
-        '@docusaurus/plugin-client-redirects',
-        {
-          redirects: []
-        }
-      ],
-      'docusaurus-plugin-image-zoom'
-  ],
+  plugins: ['docusaurus-plugin-image-zoom'],
 
   presets: [
     [

@@ -7,6 +7,13 @@ on:
       - main
     # Review gh actions docs if you want to further define triggers, paths, etc
     # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
+  # Allow re-deploying by hand from the Actions tab
+  workflow_dispatch:
+
+# Only one deployment at a time; don't cancel one that is already running
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
   build:

@@ -1,101 +1,57 @@
 ---
-exclude: "index.json|^themes/|tsconfig.json"
+# Optional local checks, run on every `git commit` once enabled with
+# `pre-commit install --hook-type pre-commit --hook-type commit-msg`.
+# CI does not run them; the `Test deployment` build is what gates PRs.
+
+# tsconfig.json allows comments (JSONC), which check-json rejects
+exclude: "tsconfig.json"
 fail_fast: true
 repos:
-- hooks:
-  - id: commitizen
-    stages:
-    - commit-msg
-  repo: https://github.com/commitizen-tools/commitizen
-  rev: v4.6.0
-- hooks:
-  - id: check-useless-excludes
-  repo: meta
-- hooks:
-  - files: \.(css|js|md|markdown|json)
-    id: prettier
-  repo: https://github.com/pre-commit/mirrors-prettier
-  rev: v4.0.0-alpha.8
-- hooks:
-  - id: seed-isort-config
-  repo: https://github.com/asottile/seed-isort-config
-  rev: v2.2.0
-- hooks:
-  - id: isort
-  repo: https://github.com/pre-commit/mirrors-isort
-  rev: v5.10.1
-- hooks:
-  - id: black
-  repo: https://github.com/python/black
-  rev: 25.1.0
-- hooks:
-  - id: check-added-large-files
-    args: [ --maxkb=10000 ]
-  - id: check-ast
-  - id: check-case-conflict
-  - id: check-executables-have-shebangs
-  - id: check-json
-  - id: check-merge-conflict
-  - id: check-symlinks
-  - id: check-vcs-permalinks
-  - id: debug-statements
-  - id: check-xml
-  - args:
-    - --unsafe
-    id: check-yaml
-  - id: end-of-file-fixer
-  - id: forbid-new-submodules
-  - args:
-    - --branch
-    - gh-pages
-    id: no-commit-to-branch
-  - id: requirements-txt-fixer
-  - id: sort-simple-yaml
-  - id: trailing-whitespace
-  - id: mixed-line-ending
-  - id: detect-private-key
-  - id: check-byte-order-marker
-  - id: check-docstring-first
-  repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v5.0.0
-- hooks:
-  - id: flake8
-  repo: https://github.com/pycqa/flake8
-  rev: 7.2.0
-- repo: https://github.com/scop/pre-commit-shfmt
-  rev: v3.11.0-1
-  hooks:
-  # Choose one of:
-  - id: shfmt # native (requires/installs Go to build)
-    args:
-    - -w
-    - -i
-    - "4"
-    - -s
-    types:
-    - shell
+  # Checks that commit messages follow Conventional Commits (feat:, fix:, ...)
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v4.6.0
+    hooks:
+      - id: commitizen
+        stages:
+          - commit-msg
 
-- hooks:
-  - id: blacken-docs
-  repo: https://github.com/asottile/blacken-docs
-  rev: 1.19.1
+  # Fails if any `exclude` pattern in this file no longer matches a file
+  - repo: meta
+    hooks:
+      - id: check-useless-excludes
 
-# - repo: https://github.com/asottile/pyupgrade
-#   rev: v2.38.0
-#   hooks:
-#     - id: pyupgrade
-#       args: [--py39-plus]
+  # Formats CSS, JS, Markdown and JSON
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v4.0.0-alpha.8
+    hooks:
+      - id: prettier
+        files: \.(css|js|md|markdown|json)
 
-- repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
-  rev: 0.2.3 # or other specific tag
-  hooks:
-  - id: yamlfmt
-    args: [ --mapping, "2", --sequence, "4", --offset, "2", "--preserve-quotes" ]
+  # Generic file hygiene
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-added-large-files # blocks files over 10 MB
+        args: [--maxkb=10000]
+      - id: check-case-conflict # names that clash on case-insensitive filesystems (macOS, Windows)
+      - id: check-executables-have-shebangs
+      - id: check-json # JSON syntax
+      - id: check-merge-conflict # leftover <<<<<<< / >>>>>>> markers
+      - id: check-symlinks # broken symlinks
+      - id: check-vcs-permalinks # GitHub links pinned to a commit, not a branch
+      - id: check-xml # XML/SVG syntax
+      - id: check-yaml # YAML syntax (--unsafe: only parse, don't build objects)
+        args: [--unsafe]
+      - id: end-of-file-fixer # files end with exactly one newline
+      - id: forbid-new-submodules
+      - id: trailing-whitespace
+      - id: mixed-line-ending
+      - id: detect-private-key # stops committing SSH/TLS private keys
+      - id: check-byte-order-marker
 
-- repo: https://github.com/hcodes/yaspeller.git
-  rev: v10.0.1
-  hooks:
-  - id: yaspeller
-    files: \.en\.md
-    types:
-    - markdown
+  # Formats YAML (workflows, blog/tags.yml...) with consistent indentation
+  - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
+    rev: 0.2.3
+    hooks:
+      - id: yamlfmt
+        args: [--mapping, "2", --sequence, "4", --offset, "2", "--preserve-quotes"]
