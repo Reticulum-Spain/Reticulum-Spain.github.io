@@ -1,0 +1,9 @@
+---
+hola:
+  label: Hola
+  permalink: /hola
+  description: Tag de bienvenida
+docusaurus:
+  label: Docusaurus
+  permalink: /docusaurus
+  description: Contenido relacionado con Docusaurus
